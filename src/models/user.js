@@ -118,6 +118,8 @@ UserSchema.pre('save', function(next) {
 
             if(isPasswordValidated) {
 
+                console.log('Password OK');
+
                 this.password = data.password = passwordEncrypt(data.password);
 
             } else {
