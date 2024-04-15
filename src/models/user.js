@@ -118,7 +118,7 @@ UserSchema.pre('save', function(next) {
 
             if(isPasswordValidated) {
 
-                data.password = passwordEncrypt(data.password);
+                this.password = data.password = passwordEncrypt(data.password);
 
             } else {
                 next(new Error('Password is not validated.'));
