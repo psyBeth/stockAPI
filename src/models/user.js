@@ -97,6 +97,8 @@ const UserSchema = new mongoose.Schema({
 // https://mongoosejs.com/docs/middleware.html#pre
 // regex code: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
+const passwordEncrypt = require('../helpers/passwordEncrypt');
+
 UserSchema.pre('save', function(next) {
     // console.log('pre(save) run.')
     // console.log(this)
@@ -110,6 +112,18 @@ UserSchema.pre('save', function(next) {
     if (isEmailValidated) {
 
         console.log('Email OK');
+
+        if(data?.password) {
+            const isPasswordValidated = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(data.password);
+
+            if(isPasswordValidated) {
+
+                data.password = passwordEncrypt(data.password);
+
+            } else {
+                next(new Error('Password is not validated.'));
+            };
+        }
 
         next();
 
