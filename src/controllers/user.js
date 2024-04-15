@@ -77,7 +77,7 @@ module.exports = {
         const customFilters = req.user?.isAdmin ? { _id: req.params.id } : { _id: req.user._id };
 
         const data = await User.findOne(customFilters);
-        res.status(200).send({
+        res.status(202).send({
             error: false,
             data
         });
@@ -99,19 +99,44 @@ module.exports = {
                 }
             }
         */
-        //can only see their own record:
+        //can only update their own record:
         const customFilters = req.user?.isAdmin ? { _id: req.params.id } : { _id: req.user._id };
 
-        // admin/staff = false (in new records)
-        req.body.isStaff = false;
-        req.body.isAdmin = false;
+        // admin/staff state cannot be changed:
+        if (!req.user?.isAdmin) {
+            delete req.body.isStaff;
+            delete req.body.isAdmin;
+        };
 
+        const data = await User.updateOne(customFilters, req.body, { runValidators: true });
 
-
+        res.status(202).send({
+            error: false,
+            data,
+            new: await User.findOne(customFilters)
+        });
     },
 
     delete: async (req, res) => {
+        /*
+            #swagger.tags = ["Users"]
+            #swagger.summary = "Delete User"
+        */
+        //can only delete their own record:
+        // isAdmin control made in permissions so no need here
+        // const customFilters = req.user?.isAdmin ? { _id: req.params.id } : {};
+        if(req.params.id != req.user._id){
 
+            const data = await User.deleteOne({_id: req.params.id});
+
+            res.status(data.deletedCount? 204 : 404).send({
+                error: !data.deletedCount,
+                data
+            });
+
+        } else {
+            res.errorStatusCode = 403;
+            throw new Error('You cannot remove your own account.');
+        };
     }
-
 };
