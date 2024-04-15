@@ -93,4 +93,34 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 });
 
+/* ----------------------------------------------- */
+// https://mongoosejs.com/docs/middleware.html#pre
+// regex code: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+UserSchema.pre('save', function(next) {
+    // console.log('pre(save) run.')
+    // console.log(this)
+
+    // get data from "this"
+    const data = this;
+
+    // email@domain.com
+    const isEmailValidated = data.email ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email) : true;
+
+    if (isEmailValidated) {
+
+        console.log('Email OK');
+
+        next();
+
+    } else {
+
+        next(new Error('Email is not validated.'));
+
+    };
+
+});
+
+/* ----------------------------------------------- */
+
 module.exports = mongoose.model('User', UserSchema);
