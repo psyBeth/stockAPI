@@ -1,10 +1,12 @@
 'use strict'
 
 const User = require('../models/user');
+const Token = require('../models/token');
+const passwordEncrypt = require('../helpers/passwordEncrypt');
 
 module.exports = {
-    
-    list: async(req, res) => {
+
+    list: async (req, res) => {
         /*
             #swagger.tags = ["Users"]
             #swagger.summary = "List Users"
@@ -19,7 +21,7 @@ module.exports = {
             `
         */
         // non admin users can only see their own records:
-        const customFilters = req.user?.isAdmin ? {} : {_id: req.user._id};
+        const customFilters = req.user?.isAdmin ? {} : { _id: req.user._id };
 
         const data = await res.getModelList(User, customFilters);
         res.status(200).send({
@@ -29,7 +31,7 @@ module.exports = {
         });
     },
 
-    create: async(req, res) => {
+    create: async (req, res) => {
         /*
             #swagger.tags = ["Users"]
             #swagger.summary = "Create User"
@@ -52,20 +54,63 @@ module.exports = {
         const data = await User.create(req.body);
 
         /* AUTO LOGIN */
-        
+        const tokenData = await Token.create({
+            userId: data._id,
+            token: passwordEncrypt(data._id + Date.now())
+        });
         /* AUTO LOGIN */
 
-    },    
-    
-    read: async(req, res) => {
+        res.status(201).send({
+            error: false,
+            token: tokenData.token,
+            data
+        });
 
     },
 
-    update: async(req, res) => {
+    read: async (req, res) => {
+        /*
+            #swagger.tags = ["Users"]
+            #swagger.summary = "Get Single User"
+        */
+        //can only see their own record:
+        const customFilters = req.user?.isAdmin ? { _id: req.params.id } : { _id: req.user._id };
+
+        const data = await User.findOne(customFilters);
+        res.status(200).send({
+            error: false,
+            data
+        });
+    },
+
+    update: async (req, res) => {
+        /*
+            #swagger.tags = ["Users"]
+            #swagger.summary = "Update User"
+            #swagger.parameters['body'] = {
+                in: 'body',
+                required: true,
+                schema: {
+                    "username": "test",
+                    "password": "1234",
+                    "email": "test@site.com",
+                    "firstName": "test",
+                    "lastName": "test",
+                }
+            }
+        */
+        //can only see their own record:
+        const customFilters = req.user?.isAdmin ? { _id: req.params.id } : { _id: req.user._id };
+
+        // admin/staff = false (in new records)
+        req.body.isStaff = false;
+        req.body.isAdmin = false;
+
+
 
     },
 
-    delete: async(req, res) => {
+    delete: async (req, res) => {
 
     }
 
