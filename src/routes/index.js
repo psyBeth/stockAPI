@@ -8,8 +8,8 @@ const router = require('express').Router()
 // router.use('/auth', require('./auth'));
 // user:
 router.use('/users', require('./user'));
-// // token:
-// router.use('/tokens', require('./token'));
+// token:
+router.use('/tokens', require('./token'));
 
 
 // // brand:
