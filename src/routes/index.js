@@ -1,36 +1,31 @@
-"use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
+'use strict'
+
 const router = require('express').Router()
-/* ------------------------------------------------------- */
-// routes/:
 
 // URL: /
 
 // // auth:
-// router.use('/auth', require('./auth'))
-// // user:
-// router.use('/users', require('./user'))
+// router.use('/auth', require('./auth'));
+// user:
+router.use('/users', require('./user'));
 // // token:
-// router.use('/tokens', require('./token'))
+// router.use('/tokens', require('./token'));
 
 
 // // brand:
-// router.use('/brands', require('./brand'))
+// router.use('/brands', require('./brand'));
 // // category:
-// router.use('/categories', require('./category'))
+// router.use('/categories', require('./category'));
 // // firm:
-// router.use('/firms', require('./firm'))
+// router.use('/firms', require('./firm'));
 // // product:
-// router.use('/products', require('./product'))
+// router.use('/products', require('./product'));
 // // purchase:
-// router.use('/purchases', require('./purchase'))
+// router.use('/purchases', require('./purchase'));
 // // sale:
-// router.use('/sales', require('./sale'))
+// router.use('/sales', require('./sale'));
 
 // document:
-router.use('/documents', require('./document'))
+router.use('/documents', require('./document'));
 
-/* ------------------------------------------------------- */
-module.exports = router
+module.exports = router;

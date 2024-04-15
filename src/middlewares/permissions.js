@@ -1,8 +1,4 @@
-"use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
-// Middleware: permissions
+'use strict'
 
 module.exports = {
 
