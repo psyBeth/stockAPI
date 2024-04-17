@@ -1,6 +1,4 @@
-"use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
-const router = require('express').Router()
-/* ------------------------------------------------------- */
+'use strict'
+
+const router = require('express').Router();
+
