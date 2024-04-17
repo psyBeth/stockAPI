@@ -18,7 +18,7 @@ module.exports = {
             `
         */
 
-        const data = await res.getModelList(Product);
+        const data = await res.getModelList(Product, {}, ['categoryId', 'brandId']);
 
         res.status(200).send({
             error: false,
@@ -54,7 +54,7 @@ module.exports = {
         if(req.params?.id){
 
             //* READ SINGLE
-            const data = await Product.findOne({_id:req.params.id});
+            const data = await Product.findOne({_id:req.params.id}).populate(['categoryId', 'brandId']);
 
             res.status(200).send({
                 error: false,
@@ -64,7 +64,7 @@ module.exports = {
         } else {
 
             //* READ ALL
-            const data = await res.getModelList(Product);
+            const data = await res.getModelList(Product, {}, ['categoryId', 'brandId']);
 
             res.status(200).send({
                 error: false,
