@@ -2,6 +2,7 @@
 
 const Purchase = require('../models/purchase');
 const Product = require('../models/product');
+const purchase = require('../models/purchase');
 
 module.exports = {
     list: async (req, res) => {
@@ -110,6 +111,15 @@ module.exports = {
                 }
             }
         */
+        if(req.body?.quantity) {
+            // previous 
+            const currentPurchase = await Purchase.findOne({_id: req.params.id});
+            // difference
+            const different = req.body.quantity - currentPurchase.quantity;
+            // save the difference
+            const updateProduct = await Product.updateOne({_id: currentPurchase.productId}, { $inc: {quantity: +different}});
+        }
+
         const data = await Purchase.updateOne({_id:req.params.id}, req.body, {runValidators: true});
         res.status(202).send({
             error: false,
