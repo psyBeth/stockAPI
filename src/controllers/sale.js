@@ -1,6 +1,7 @@
 'use strict'
 
 const Sale = require('../models/sale');
+const Product = require('../models/product');
 
 module.exports = {
 
@@ -20,9 +21,9 @@ module.exports = {
         */
 
         const data = await res.getModelList(Sale, {}, [
-            {path: 'userId', select: 'username email'},
+            { path: 'userId', select: 'username email' },
             'brandId',
-            {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+            { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
         ]);
 
         res.status(200).send({
@@ -44,13 +45,26 @@ module.exports = {
                 }
             }
         */
+        req.body.userId = req.user._id;
 
-        const data = await Sale.create(req.body);
+        //updates product info:
+        const currentProduct = await Product.findOne({ _id: req.body.productId });
 
-        res.status(201).send({
-            error: false,
-            data
-        });
+        if (currentProduct.quantity >= req.body.quantity) {
+            // create
+            const data = await Sale.create(req.body);
+
+            // decrease the product quantity after purchase
+            const updateProduct = await Product.updateOne({ _id: data.productId }, { $inc: { quantity: -data.quantity } });
+
+            res.status(201).send({
+                error: false,
+                data
+            });
+        } else {
+            res.errorStatusCode = 422
+            throw new Error('There is not enough product-quantity for this sale.', { cause: { currentProduct } });
+        };
     },
 
     read: async (req, res) => {
@@ -61,11 +75,11 @@ module.exports = {
 
         if (req.params?.id) {
 
-        //* READ SINGLE:
+            //* READ SINGLE:
             const data = await Sale.findOne({ _id: req.params.id }).populate([
-                {path: 'userId', select: 'username email'},
+                { path: 'userId', select: 'username email' },
                 'brandId',
-                {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+                { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
             ]);
 
             res.status(200).send({
@@ -74,11 +88,11 @@ module.exports = {
             });
 
         } else {
-        //* READ ALL:
+            //* READ ALL:
             const data = await res.getModelList(Sale, {}, [
-                {path: 'userId', select: 'username email'},
+                { path: 'userId', select: 'username email' },
                 'brandId',
-                {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+                { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
             ]);
 
             res.status(200).send({
@@ -101,6 +115,21 @@ module.exports = {
                 }
             }
         */
+        if (req.body?.quantity) {
+            // previous 
+            const currentSale = await Sale.findOne({ _id: req.params.id });
+            // difference
+            const different = req.body.quantity - currentSale.quantity;
+            // save the difference
+            const updateProduct = await Product.updateOne({ _id: currentSale.productId, quantity: { $gte: different } }, { $inc: { quantity: -different } });
+            // console.log(updateProduct);
+
+            // if update fails, stop the system
+            if (updateProduct.modifiedCount == 0) {
+                res.errorStatusCode = 422;
+                throw new Error('There is not enough product-quantity for this sale.');
+            };
+        };
 
         const data = await Sale.updateOne({ _id: req.params.id }, req.body, { runValidators: true });
 
@@ -116,8 +145,12 @@ module.exports = {
             #swagger.tags = ["Sales"]
             #swagger.summary = "Delete Sale"
         */
-
+        // previous 
+        const currentSale = await Sale.findOne({ _id: req.params.id });
+        //delete
         const data = await Sale.deleteOne({ _id: req.params.id });
+
+        const updateProduct = await Product.updateOne({ _id: currentSale.productId }, { $inc: { quantity: +currentSale.quantity } });
 
         res.status(data.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,

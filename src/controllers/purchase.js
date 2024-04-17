@@ -2,7 +2,6 @@
 
 const Purchase = require('../models/purchase');
 const Product = require('../models/product');
-const purchase = require('../models/purchase');
 
 module.exports = {
     list: async (req, res) => {
