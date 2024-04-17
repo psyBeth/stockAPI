@@ -21,10 +21,10 @@ module.exports = {
         */
 
         const data = await res.getModelList(Purchase, {}, [
-            {path: 'userId', select: 'username email'},
-            {path: 'firmId', select: 'name image'},
+            { path: 'userId', select: 'username email' },
+            { path: 'firmId', select: 'name image' },
             'brandId',
-            {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+            { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
         ]);
 
         res.status(200).send({
@@ -34,7 +34,7 @@ module.exports = {
         });
     },
 
-    create: async(req, res) => {
+    create: async (req, res) => {
         /*
             #swagger.tags = ["Categories"]
             #swagger.summary = "Create Purchase"
@@ -51,7 +51,7 @@ module.exports = {
         const data = await Purchase.create(req.body);
 
         // increase the product quantity after purchase
-        const updateProduct = await Product.updateOne({_id: data.productId}, {$inc: {quantity: +data.quantity}});
+        const updateProduct = await Product.updateOne({ _id: data.productId }, { $inc: { quantity: +data.quantity } });
         // req.body = data
 
         res.status(201).send({
@@ -60,19 +60,19 @@ module.exports = {
         });
     },
 
-    read: async(req, res) => {
+    read: async (req, res) => {
         /*
             #swagger.tags = ["Categories"]
             #swagger.summary = "Get Single Purchase"
         */
-        if(req.params?.id){
+        if (req.params?.id) {
 
             //* READ SINGLE
-            const data = await Purchase.findOne({_id:req.params.id}).populate([
-                {path: 'userId', select: 'username email'},
-                {path: 'firmId', select: 'name image'},
+            const data = await Purchase.findOne({ _id: req.params.id }).populate([
+                { path: 'userId', select: 'username email' },
+                { path: 'firmId', select: 'name image' },
                 'brandId',
-                {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+                { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
             ]);
 
             res.status(200).send({
@@ -84,22 +84,22 @@ module.exports = {
 
             //* READ ALL
             const data = await res.getModelList(Purchase, {}, [
-                {path: 'userId', select: 'username email'},
-                {path: 'firmId', select: 'name image'},
+                { path: 'userId', select: 'username email' },
+                { path: 'firmId', select: 'name image' },
                 'brandId',
-                {path: 'productId', select: 'name', populate: { path: 'categoryId' }}
+                { path: 'productId', select: 'name', populate: { path: 'categoryId' } }
             ]);
 
             res.status(200).send({
                 error: false,
                 details: await res.getModelListDetails(Purchase),
                 data
-            });    
+            });
 
         };
     },
 
-    update: async(req, res) => {
+    update: async (req, res) => {
         /*
             #swagger.tags = ["Categories"]
             #swagger.summary = "Update Purchase"
@@ -111,29 +111,35 @@ module.exports = {
                 }
             }
         */
-        if(req.body?.quantity) {
+        if (req.body?.quantity) {
             // previous 
-            const currentPurchase = await Purchase.findOne({_id: req.params.id});
+            const currentPurchase = await Purchase.findOne({ _id: req.params.id });
             // difference
             const different = req.body.quantity - currentPurchase.quantity;
             // save the difference
-            const updateProduct = await Product.updateOne({_id: currentPurchase.productId}, { $inc: {quantity: +different}});
+            const updateProduct = await Product.updateOne({ _id: currentPurchase.productId }, { $inc: { quantity: +different } });
         }
 
-        const data = await Purchase.updateOne({_id:req.params.id}, req.body, {runValidators: true});
+        const data = await Purchase.updateOne({ _id: req.params.id }, req.body, { runValidators: true });
         res.status(202).send({
             error: false,
             data,
-            new: await Purchase.findOne({_id:req.params.id})
+            new: await Purchase.findOne({ _id: req.params.id })
         });
     },
 
-    delete: async(req, res) => {
+    delete: async (req, res) => {
         /*
             #swagger.tags = ["Categories"]
             #swagger.summary = "Delete Purchase"
         */
-        const data = await Purchase.deleteOne({_id:req.params.id});
+        // previous 
+        const currentPurchase = await Purchase.findOne({ _id: req.params.id });
+        //delete:
+        const data = await Purchase.deleteOne({ _id: req.params.id });
+        // decrease the product quantity
+        const updateProduct = await Product.updateOne({ _id: currentPurchase.productId }, { $inc: { quantity: -currentPurchase.productId } });       
+
         res.status(data.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,
             data
