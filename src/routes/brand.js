@@ -5,6 +5,8 @@ const router = require('express').Router();
 const brand = require('../controllers/brand');
 const permissions = require('../middlewares/permissions');
 
+// URL: /brands:
+
 router.route('/(:id)?')
     .post(permissions.isAdmin, brand.create)
     .get(permissions.isStaff, brand.read)
