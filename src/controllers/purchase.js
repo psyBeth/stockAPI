@@ -44,6 +44,8 @@ module.exports = {
                 }
             }
         */
+        req.body.userId = req.user._id;
+
         const data = await Purchase.create(req.body);
         res.status(201).send({
             error: false,
