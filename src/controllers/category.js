@@ -52,11 +52,28 @@ module.exports = {
             #swagger.tags = ["Categories"]
             #swagger.summary = "Get Single Category"
         */
-        const data = await Category.findOne({_id:req.params.id});
-        res.status(200).send({
-            error: false,
-            data
-        });
+        if(req.params?.id){
+
+            //* READ SINGLE
+            const data = await Category.findOne({_id:req.params.id});
+
+            res.status(200).send({
+                error: false,
+                data
+            });
+
+        } else {
+
+            //* READ ALL
+            const data = await res.getModelList(Category);
+
+            res.status(200).send({
+                error: false,
+                details: await res.getModelListDetails(Category),
+                data
+            });    
+
+        };
     },
 
     update: async(req, res) => {
