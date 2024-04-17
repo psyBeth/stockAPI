@@ -42,6 +42,27 @@ const SaleSchema = new mongoose.Schema({
 }, {
     collection: 'Sales',
     timestamps: true
-})
+});
+
+/* ------------------------------------------------------- */
+// https://mongoosejs.com/docs/middleware.html
+
+// pre('init') -> We can manipulate the data (output) before displaying the data to the screen:
+// not a middleware, no need for next:
+
+SaleSchema.pre('init', function (document) {
+    // console.log(document)
+    document.extraField = 'Cohort 15'
+    document.__v = undefined
+    // toLocaleDateString:
+    // https://www.w3schools.com/jsref/jsref_tolocalestring.asp
+    document.createdAtStr = document.createdAt.toLocaleString('tr-tr', { dateStyle: 'full', timeStyle: 'medium' })
+    document.updatedAtStr = document.updatedAt.toLocaleString('tr-tr', { dateStyle: 'full', timeStyle: 'medium' })
+    document.createdAt = undefined
+    document.updatedAt = undefined
+    document.price = 600
+
+});
+/* ------------------------------------------------------- */
 
 module.exports = mongoose.model('Sale', SaleSchema);
