@@ -1,6 +1,7 @@
 'use strict'
 
 const Purchase = require('../models/purchase');
+const Product = require('../models/product');
 
 module.exports = {
     list: async (req, res) => {
@@ -47,6 +48,11 @@ module.exports = {
         req.body.userId = req.user._id;
 
         const data = await Purchase.create(req.body);
+
+        // increase the product quantity after purchase
+        const updateProduct = await Product.updateOne({_id: data.productId}, {$inc: {quantity: +data.quantity}});
+        // req.body = data
+
         res.status(201).send({
             error: false,
             data
