@@ -1,7 +1,6 @@
-"use strict"
-const { mongoose } = require('../configs/dbConnection')
-/* ------------------------------------------------------- */
-// Sale Model:
+'use strict'
+
+const { mongoose } = require('../configs/dbConnection');
 
 const SaleSchema = new mongoose.Schema({
 
@@ -37,14 +36,12 @@ const SaleSchema = new mongoose.Schema({
         type: Number,
         set: function() { return this.price * this.quantity },
         default: function() { return this.price * this.quantity },
-        transform: function() { return this.price * this.quantity },
-    },
-
+        transform: function() { return this.price * this.quantity }
+    }
 
 }, {
     collection: 'Sales',
     timestamps: true
 })
 
-/* ------------------------------------------------------- */
 module.exports = mongoose.model('Sale', SaleSchema);

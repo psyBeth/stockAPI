@@ -1,13 +1,9 @@
-"use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
-const router = require('express').Router()
-/* ------------------------------------------------------- */
-// routes/sale:
+'use strict'
 
-const sale = require('../controllers/sale')
-const permissions = require('../middlewares/permissions')
+const router = require('express').Router();
+
+const sale = require('../controllers/sale');
+const permissions = require('../middlewares/permissions');
 
 // URL: /sales
 
@@ -18,5 +14,4 @@ router.route('/(:id)?')
     .patch(permissions.isAdmin, sale.update)
     .delete(permissions.isAdmin, sale.delete)
 
-/* ------------------------------------------------------- */
-module.exports = router
+module.exports = router;

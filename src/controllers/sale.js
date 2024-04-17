@@ -1,7 +1,4 @@
-"use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
+'use strict'
 
 const Sale = require('../models/sale');
 
@@ -22,13 +19,13 @@ module.exports = {
             `
         */
 
-        const data = await res.getModelList(Sale)
+        const data = await res.getModelList(Sale);
 
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails(Sale),
             data
-        })
+        });
     },
 
     create: async (req, res) => {
@@ -44,12 +41,12 @@ module.exports = {
             }
         */
 
-        const data = await Sale.create(req.body)
+        const data = await Sale.create(req.body);
 
         res.status(201).send({
             error: false,
             data
-        })
+        });
     },
 
     read: async (req, res) => {
@@ -58,28 +55,26 @@ module.exports = {
             #swagger.summary = "Get Single Sale"
         */
 
-        console.log('read run')
-
         if (req.params?.id) {
-        // Single:
-            const data = await Sale.findOne({ _id: req.params.id })
+
+        //* READ SINGLE:
+            const data = await Sale.findOne({ _id: req.params.id });
 
             res.status(200).send({
                 error: false,
                 data
-            })
+            });
 
         } else {
-        // All:
-            const data = await res.getModelList(Sale)
+        //* READ ALL:
+            const data = await res.getModelList(Sale);
 
             res.status(200).send({
                 error: false,
                 details: await res.getModelListDetails(Sale),
                 data
-            })
-        }
-
+            });
+        };
     },
 
     update: async (req, res) => {
@@ -95,13 +90,13 @@ module.exports = {
             }
         */
 
-        const data = await Sale.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+        const data = await Sale.updateOne({ _id: req.params.id }, req.body, { runValidators: true });
 
         res.status(202).send({
             error: false,
             data,
             new: await Sale.findOne({ _id: req.params.id })
-        })
+        });
     },
 
     delete: async (req, res) => {
@@ -110,13 +105,11 @@ module.exports = {
             #swagger.summary = "Delete Sale"
         */
 
-        const data = await Sale.deleteOne({ _id: req.params.id })
+        const data = await Sale.deleteOne({ _id: req.params.id });
 
         res.status(data.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,
             data
-        })
-
+        });
     },
-
-}
+};
