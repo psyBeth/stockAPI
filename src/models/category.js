@@ -9,7 +9,8 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         trim: true,
         required: true,
-        unique: true
+        unique: true,
+        set: name => name.toUpperCase()
     }
 
 } , {
