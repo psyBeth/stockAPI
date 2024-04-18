@@ -6,8 +6,8 @@ module.exports = {
 
     list: async (req, res) => {
         /*
-            #swagger.tags = ["Categories"]
-            #swagger.summary = "List Categories"
+            #swagger.tags = ["Brands"]
+            #swagger.summary = "List Brands"
             #swagger.description = `
                 You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.
                 <ul> Examples:
@@ -30,8 +30,8 @@ module.exports = {
 
     create: async(req, res) => {
         /*
-            #swagger.tags = ["Categories"]
-            #swagger.summary = "Create Brand"
+            #swagger.tags = ["Brands"]
+            #swagger.summary = "Brands"
             #swagger.parameters['body'] = {
                 in: 'body',
                 required: true,
@@ -49,7 +49,7 @@ module.exports = {
 
     read: async(req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Brands"]
             #swagger.summary = "Get Single Brand"
         */
         if(req.params?.id){
@@ -78,7 +78,7 @@ module.exports = {
 
     update: async(req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Brands"]
             #swagger.summary = "Update Brand"
             #swagger.parameters['body'] = {
                 in: 'body',
@@ -98,7 +98,7 @@ module.exports = {
 
     delete: async(req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Brands"]
             #swagger.summary = "Delete Brand"
         */
         const data = await Brand.deleteOne({_id:req.params.id});
