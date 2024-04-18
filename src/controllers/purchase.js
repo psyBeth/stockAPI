@@ -6,8 +6,8 @@ const Product = require('../models/product');
 module.exports = {
     list: async (req, res) => {
         /*
-            #swagger.tags = ["Categories"]
-            #swagger.summary = "List Categories"
+            #swagger.tags = ["Purchases"]
+            #swagger.summary = "List Purchases"
             #swagger.description = `
                 You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.
                 <ul> Examples:
@@ -35,7 +35,7 @@ module.exports = {
 
     create: async (req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Purchases"]
             #swagger.summary = "Create Purchase"
             #swagger.parameters['body'] = {
                 in: 'body',
@@ -61,7 +61,7 @@ module.exports = {
 
     read: async (req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Purchases"]
             #swagger.summary = "Get Single Purchase"
         */
         if (req.params?.id) {
@@ -100,7 +100,7 @@ module.exports = {
 
     update: async (req, res) => {
         /*
-            #swagger.tags = ["Categories"]
+            #swagger.tags = ["Purchases"]
             #swagger.summary = "Update Purchase"
             #swagger.parameters['body'] = {
                 in: 'body',
